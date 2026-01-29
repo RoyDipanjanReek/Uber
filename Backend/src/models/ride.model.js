@@ -10,6 +10,14 @@ const rideSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "captain",
   },
+  couponCodeForDiscount: {
+    couponId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "coupon"
+    },
+    discountPercentage: Number,
+    code: String
+  },
   pickUp: {
     type: String,
     required: true,
@@ -21,6 +29,9 @@ const rideSchema = new mongoose.Schema({
   fare: {
     type: Number,
     required: true,
+  },
+  discount: {
+    type: Number
   },
   status: {
     type: String,

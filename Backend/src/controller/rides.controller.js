@@ -6,6 +6,13 @@ import {
   getDistanceAndTime,
 } from "../services/map.services.js";
 import rideModel from "../models/ride.model.js";
+import { 
+  confirmRideService, 
+  createRideService, 
+  getFareService, 
+  startRideService 
+} from "../services/rides.services.js";
+import { sendMessageToSocketId } from "../socket.js";
 
 export const createRide = async (req, res) => {
   const errors = validationResult(req);
@@ -13,7 +20,7 @@ export const createRide = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { userId, pickup, destination, vechileType } = req.body;
+  const { userId, pickup, destination, vechileType, couponCode } = req.body;
 
   try {
     const ride = await createRideService({
@@ -21,6 +28,7 @@ export const createRide = async (req, res) => {
       pickup,
       destination,
       vechileType,
+      couponCode
     });
 
     res.status(201).json(ride);
@@ -60,7 +68,7 @@ export const getFare = async (req, res) => {
   const { pickup, destination } = req.body;
 
   try {
-    const fare = await getFare(pickup, destination);
+    const fare = await getFareService(pickup, destination);
 
     res.status(200).json(fare);
   } catch (error) {
@@ -78,7 +86,7 @@ export const confirmRide = async (req, res) => {
   const { rideId } = req.body;
 
   try {
-    const ride = await confirmRide({ rideId, captain: req.captain });
+    const ride = await confirmRideService({ rideId, captain: req.captain });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "new-ride",
@@ -101,14 +109,14 @@ export const startRide = async (req, res) => {
   const { rideId, otp } = req.body;
 
   try {
-    const startRide = await startRide({ rideId, otp, captain: req.captain });
+    const startRide = await startRideService({ rideId, otp, captain: req.captain });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "new-ride",
-      data: ride,
+      data: startRide,
     });
 
-    return res.status(200).json(ride);
+    return res.status(200).json(startRide);  //TODO
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Ride not started" });
@@ -124,14 +132,14 @@ export const endRide = async (req, res) => {
   const { rideId } = req.body;
 
   try {
-    const ride = await endRide({ rideId, captain: req.captain });
+    const endRide = await endRideService({ rideId, captain: req.captain });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "ride-ended",
-      data: ride,
+      data: endRide,
     });
 
-    return res.status(200).json(ride);
+    return res.status(200).json(endRide);
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: "Ride not started" });

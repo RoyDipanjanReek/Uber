@@ -12,7 +12,7 @@ const balckListTokenSchema = new mongoose.Schema({
         default:Date.now,
         expires: 86400 // 24 hours in seconds
     }
-})
+}, {timestamps: true})
 
 
 const blackListModel = mongoose.model("ride", balckListTokenSchema)

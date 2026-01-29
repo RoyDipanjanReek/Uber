@@ -2,12 +2,13 @@ import userModel from "../models/user.model.js";
 import captainModel from "../models/captain.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ApiError, catchAsync } from "./error.middleware.js";
 
-export const authUser = async (req, res, next) => {
+export const authUser = catchAsync(async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+   throw new ApiError("You are not logged in", 401)
   }
 
   try {
@@ -20,7 +21,7 @@ export const authUser = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-};
+});
 
 export const authCaptain = async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
