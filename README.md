@@ -1,4 +1,4 @@
-# 🚕 Uber Backend Clone (Node.js + Express + MongoDB)
+# 🚕 Ride-Hailing Backend System (Node.js + Express + MongoDB)
 
 A production-ready backend clone of Uber built using **Node.js**, **Express**, and **MongoDB**.  
 This project focuses on clean architecture, scalability, and real-world backend practices such as authentication, role-based users (Captain & User), ride management, map services, and request validation.
